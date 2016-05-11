@@ -1,0 +1,25 @@
+{
+  "name": "buzzy",
+  "version": "1.0.0",
+  "description": "A simple buzzer program using websockets.",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.13.4",
+    "escape-html": "^1.0.3",
+    "socket.io": "^1.4.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jordanbuchman/buzzy.git"
+  },
+  "author": "Jordan Buchman <jordan.m.buchman@gmail.com> (http://jmb.cat)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jordanbuchman/buzzy/issues"
+  },
+  "homepage": "https://github.com/jordanbuchman/buzzy#readme"
+}

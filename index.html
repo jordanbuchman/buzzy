@@ -1,0 +1,123 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Buzzy</title>
+  </head>
+  <body>
+    <script>
+          function host(){
+            document.getElementById("right").classList.add("shrink");
+            document.getElementById("left").classList.add("expand");
+            document.getElementById("lbutton").classList.add("goaway");
+            document.getElementById("rbutton").classList.add("goaway");
+            document.getElementById("roomid").classList.add("goaway");
+            document.getElementById("name").classList.add("goaway");
+            document.getElementById("host_form").classList.add("godown");
+            document.getElementById("logo").classList.add("goleft");
+          }
+          function join(){
+            document.getElementById("left").classList.add("shrink");
+            document.getElementById("right").classList.add("expand");
+            document.getElementById("lbutton").classList.add("goaway");
+            document.getElementById("rbutton").classList.add("goaway");
+            document.getElementById("roomid").classList.add("goaway");
+            document.getElementById("name").classList.add("goaway");
+            document.getElementById("join_form").classList.add("godown");
+            document.getElementById("logo").classList.add("goleft");
+          }
+
+
+    </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+
+    <script>
+      hosting=false;
+      socket = io();
+
+      socket.on('number', function(msg){
+        $("#number").text(msg);
+        host();
+      });
+      socket.on('buzz', function(msg){
+        if(hosting){
+          currentNum += 1;
+          var audio = new Audio('ding.mp3');
+          audio.play();
+          $("#list").append('<li class="mdl-list__item">\
+          <span class="mdl-list__item-primary-content">\
+            <span class="mdl-list__item-avatar" style="text-align:center">'+currentNum+'</span>'+msg+'</span>\
+          </li>');
+
+
+        }
+      });
+      socket.on('name',function(msg){
+        $("#nametag").text(msg);
+        join();
+      });
+      socket.on('reset', function(msg){
+        console.log("hi");
+        $("#list").empty();
+        currentNum=0;
+      })
+      function hostGame(){
+        socket.emit('host',{});
+        hosting=true;
+        currentNum=0;
+      }
+      function joinGame(){
+        socket.emit('join',{number:document.getElementById("sample2").value,name:document.getElementById("sample3").value});
+      }
+
+      function resetGame(){
+        socket.emit('reset',{});
+      }
+
+      function buzzGame(){
+        socket.emit('buzz',{});
+      }
+    </script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+
+    <img id="logo" style="position:absolute; top: 5%; left: 50%; transform: translateX(-50%); z-index: 200;" src="buzzy.png"/>
+
+    <div id="left" class="split">
+      <button id="lbutton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mainbutton" onclick="hostGame()">Host</button>
+    </div>
+    <div id="right" class="split" style="display:flex; flex-direction: column">
+        <div id="roomid" class="mdl-textfield mdl-js-textfield mainbutton">
+          <input maxlength="6" style="background-color:#FAFAFA; border-radius: 3px; text-align: center" class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="sample2">
+          <label class="mdl-textfield__label" for="sample2">Room ID</label>
+        </div>
+        <div id="name" class="mdl-textfield mdl-js-textfield mainbutton">
+          <input style="background-color:#FAFAFA; border-radius: 3px; text-align: center" class="mdl-textfield__input" type="text" id="sample3">
+          <label class="mdl-textfield__label" for="sample3">Name</label>
+        </div>
+        <button id="rbutton" style="self-align:center" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mainbutton" onclick="joinGame()">Join</button>
+    </div>
+
+    <div id="join_form">
+      <h1 id="nametag" style="color:#fafafa; min-height:10vh; max-height:10vh; font-size:10vh;"></h1>
+      <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" style="background-color:#4051B5; max-height: 80vh; max-width: 100vw; height: 80vh; width: 80vh" onclick="buzzGame();">
+      </button>
+
+    </div>
+    <div id="wrapper">
+      <div id="host_form">
+        <h1 id="number" style="color:#fafafa; min-height:20vh; max-height:20vh; font-size:20vh;"></h1>
+        <ul class='mdl-list' id="list" style="min-height:75vh; max-height:75vh; display: flex; flex-wrap: wrap; flex-direction: column; align-content:center;">
+        </ul>
+        <button style="position:absolute; bottom:10vh; right:5vw" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored" onclick="resetGame();">
+          <i class="material-icons">clear</i>
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
